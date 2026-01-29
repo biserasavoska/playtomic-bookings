@@ -98,10 +98,36 @@ After this, the automatic booking workflow can run using your account.
 
 ## Step 6: Set the time when bookings open (optional)
 
-1. In your repo on GitHub, open the file **.github/workflows/auto-book.yml** (click it, then click the pencil icon to edit).
-2. Find the line: `- cron: "55 7 * * 1-5"`
-3. Change it to **5 minutes before** your club’s booking-open time in **UTC** (see NEXT_STEPS_GUIDE.md “Part 5.3” for how to work out the time).
-4. Click **Commit changes**.
+The workflow runs on **GitHub’s clock (UTC)**. You want it to run about **5 minutes before** your club opens bookings in *your* local time.
+
+### What to do
+
+1. On GitHub, open your repo → click the file **.github/workflows/auto-book.yml** → click the **pencil icon** (Edit).
+2. Find this line:
+   ```yaml
+   - cron: "55 7 * * 1-5"
+   ```
+3. **Replace it** with the line from the table below that matches when your club opens bookings (Monday–Friday only).
+
+### Pick your time (copy one line into the file)
+
+| Club opens at (your local time) | Your timezone | Replace with this cron line |
+|--------------------------------|---------------|-----------------------------|
+| **8:00** in the morning        | Spain (winter CET)  | `- cron: "55 6 * * 1-5"` |
+| **8:00** in the morning        | Spain (summer CEST) | `- cron: "55 5 * * 1-5"` |
+| **9:00** in the morning       | Spain (winter CET)  | `- cron: "55 7 * * 1-5"` |
+| **9:00** in the morning       | Spain (summer CEST) | `- cron: "55 6 * * 1-5"` |
+| **8:00** in the morning       | UK (winter GMT)     | `- cron: "55 7 * * 1-5"` |
+| **8:00** in the morning       | UK (summer BST)     | `- cron: "55 6 * * 1-5"` |
+| **9:00** in the morning       | UK (winter GMT)     | `- cron: "55 8 * * 1-5"` |
+| **9:00** in the morning       | UK (summer BST)     | `- cron: "55 7 * * 1-5"` |
+| **7:00** in the morning       | Spain (winter CET)  | `- cron: "55 5 * * 1-5"` |
+| **7:00** in the morning       | Spain (summer CEST) | `- cron: "55 4 * * 1-5"` |
+
+- **Winter** = roughly October–March. **Summer** = roughly April–September (when clocks go forward).
+- Not in the table? Your time is “X:00” in timezone “T”: convert X:00 to UTC (subtract 1 hour for CET, 2 for CEST, 0 for GMT, etc.). Then use **5 minutes before** that UTC time. Format: `"55 (UTC hour minus 1) * * 1-5"` (e.g. 8:00 UTC → run at 07:55 UTC → `"55 7 * * 1-5"`).
+
+4. Click **Commit changes** (green button).
 
 ---
 

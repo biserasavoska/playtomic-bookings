@@ -4,8 +4,8 @@ name: Playtomic auto-book
 
 on:
   schedule:
-    # Run at 07:55 UTC daily (adjust to your slot release time; e.g. 08:00 local = set cron accordingly)
-    - cron: "55 7 * * 1-5"
+    # 8:30 CET = 7:30 UTC → run at 07:25 UTC (5 min before)
+    - cron: "25 7 * * 1-5"
   workflow_dispatch:
     # Allow manual run from Actions tab
 
