@@ -103,16 +103,14 @@ The workflow runs on **GitHub’s clock (UTC)**. You want it to run about **5 mi
 ### What to do
 
 1. On GitHub, open your repo → click the file **.github/workflows/auto-book.yml** → click the **pencil icon** (Edit).
-2. Find this line:
-   ```yaml
-   - cron: "55 7 * * 1-5"
-   ```
-3. **Replace it** with the line from the table below that matches when your club opens bookings (Monday–Friday only).
+2. Find the line that starts with `- cron: "…"` (under `schedule:`).
+3. **Replace it** with the line from the table below that matches when your club opens bookings (Monday–Friday only). Default is 8:30 CET: `- cron: "25 7 * * 1-5"`.
 
 ### Pick your time (copy one line into the file)
 
 | Club opens at (your local time) | Your timezone | Replace with this cron line |
 |--------------------------------|---------------|-----------------------------|
+| **8:30** in the morning        | Belgium/Netherlands (CET) | `- cron: "25 7 * * 1-5"` *(default)* |
 | **8:00** in the morning        | Spain (winter CET)  | `- cron: "55 6 * * 1-5"` |
 | **8:00** in the morning        | Spain (summer CEST) | `- cron: "55 5 * * 1-5"` |
 | **9:00** in the morning       | Spain (winter CET)  | `- cron: "55 7 * * 1-5"` |
@@ -128,6 +126,18 @@ The workflow runs on **GitHub’s clock (UTC)**. You want it to run about **5 mi
 - Not in the table? Your time is “X:00” in timezone “T”: convert X:00 to UTC (subtract 1 hour for CET, 2 for CEST, 0 for GMT, etc.). Then use **5 minutes before** that UTC time. Format: `"55 (UTC hour minus 1) * * 1-5"` (e.g. 8:00 UTC → run at 07:55 UTC → `"55 7 * * 1-5"`).
 
 4. Click **Commit changes** (green button).
+
+---
+
+## How the automated run works (e.g. tomorrow at 8:30 CET)
+
+1. **GitHub wakes the job** at **07:25 UTC** (08:25 CET), Monday–Friday. That’s 5 minutes *before* your club opens bookings at 08:30 CET.
+2. **The workflow** checks out the repo, installs Python and dependencies, then runs `python -m src.scheduler`.
+3. **The scheduler** reads `booking_release_time` and `booking_release_timezone` from `config/booking_config.yaml`. It **waits** until **08:30 Europe/Brussels** (CET), then starts trying to book.
+4. **Booking** runs up to 5 times with a 1-second pause between attempts, so you hit the first few seconds after slots open.
+5. **Result**: If a matching slot is found (e.g. 19:00 on a weekday in the next 14 days), the court is reserved and you get a Telegram notification (if configured). Otherwise you get a “No court booked” notification.
+
+To run it once by hand: **Actions** → **Playtomic auto-book** → **Run workflow**.
 
 ---
 

@@ -1,7 +1,11 @@
-# Playtomic auto-booking config
-# Copy to your repo and fill in your venue (tenant) ID from Playtomic.
+# Playtomic auto-booking: Zuid - Antwerp Padelclub 7de Olympiade
+# https://playtomic.com/clubs/zuid-antwerp-padelclub-7de-olympiade
+#
+# 1) Set your club: replace YOUR_TENANT_ID with your club's Playtomic venue ID.
+#    To find it: open the club on Playtomic, F12 → Network → reload → look for "availability" request → copy tenant_id from the URL.
+# 2) Bookings open 14 days ahead at 8:30 CET; we try 19:00 first, then the order below.
 
-# Preferred start times (weekdays 18:00–21:30)
+# All acceptable start times (weekdays 18:00–20:30 CET)
 target_hours:
   - "18:00"
   - "18:30"
@@ -9,23 +13,50 @@ target_hours:
   - "19:30"
   - "20:00"
   - "20:30"
-  - "21:00"
-  - "21:30"
 
-# Weekdays only (0=Monday .. 6=Sunday)
+# Preferred order: 19:00 first, then 18:30, 18:00, 19:30, 20:00, 20:30
+preferred_hours:
+  - "19:00"
+  - "18:30"
+  - "18:00"
+  - "19:30"
+  - "20:00"
+  - "20:30"
+
+# Set to true to book any time on target weekdays (for testing or flexible booking)
+accept_any_time: false
+
+# Weekdays only (0=Monday .. 4=Friday)
 weekdays_only: true
-target_weekdays: [0, 1, 2, 3, 4]  # Mon–Fri
+target_weekdays: [0, 1, 2, 3, 4]
 
-# Slot duration in hours (1, 1.5, or 2)
+# Slot duration in hours
 duration_hours: 1.5
 
-# Max reservations per week per venue
+# Max reservations per week
 reservations_per_week: 1
 
-# Venues to try (get tenant ID from Playtomic app/URL when viewing the club)
-tenants:
-  - id: "YOUR_TENANT_ID"   # Replace with your club's Playtomic venue ID
-    name: "My Padel Club"
+# 14 days ahead: at 8:30 CET they open the day that is 14 days from today
+booking_days_ahead: 14
 
-# Optional: when slots open (for cron); e.g. "08:00" if they open at 8am
-# booking_release_time: "08:00"
+# Your club (tenant ID from Playtomic availability URL)
+tenants:
+  - id: "3e8f97c2-b984-4de8-9615-d4795b9dbff5"
+    name: "Zuid - Antwerp Padelclub 7de Olympiade"
+
+# When slots open (for optional wait in scheduler). Use timezone so GitHub Actions (UTC) waits until 08:30 CET.
+booking_release_time: "08:30"
+booking_release_timezone: "Europe/Brussels"
+
+# Two accounts – both used for booking. Set env vars below.
+accounts:
+  - env_email: PLAYTOMIC_EMAIL
+    env_password: PLAYTOMIC_PASSWORD
+    target_weekdays: [0, 1, 2, 3, 4]   # Mon–Fri, preferred times
+  # Account 2: any match between today and 14 days, any time
+  - env_email: PLAYTOMIC_EMAIL_2
+    env_password: PLAYTOMIC_PASSWORD_2
+    target_weekdays: [0, 1, 2, 3, 4, 5, 6]   # Any day
+    accept_any_time: true
+    booking_start_days_ahead: 0   # Search from today
+    booking_days_ahead: 14        # Through today+14

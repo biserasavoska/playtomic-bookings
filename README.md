@@ -43,9 +43,7 @@ pip install -r requirements.txt
 
 ### 4. Notifications (optional)
 
-- To get Telegram alerts when a court is booked or booking fails, set in `.env` (or in GitHub Secrets):
-  - `TELEGRAM_BOT_TOKEN` – from [@BotFather](https://t.me/BotFather)
-  - `TELEGRAM_CHAT_ID` – your group or personal chat ID
+- To get a **Telegram** message when a court is booked or booking fails, see **[NOTIFICATIONS_SETUP.md](NOTIFICATIONS_SETUP.md)** (what Telegram is, how to create a bot, get chat ID, set token and chat ID in `.env` or GitHub Secrets). **WhatsApp is not supported** in this project (no free API for personal bots).
 
 ## Running
 
@@ -85,6 +83,24 @@ python run_booking.py
 1. Open Playtomic (app or web) and go to your club.
 2. The venue/club URL or app deep link often contains the tenant ID.
 3. Alternatively, use browser dev tools (Network tab) while loading the club page and look for API calls that include a tenant or venue ID.
+
+## If booking fails (Payment API returns HTML)
+
+If you see **"Payment API returned HTML"** or **"Reservation failed (payment API returned HTML)"** in the logs, the bot cannot complete a booking with the current endpoints. **For developers taking over:** see **[DEVELOPER_HANDOVER.md](DEVELOPER_HANDOVER.md)** for what was already tried, why no POST appears in the Network tab when clicking "Continue - €0.00", and what to try next (HAR capture, payment-page recording, JS debugging). To fix it, we need the **exact request** the Playtomic website sends when you book. Do this once:
+
+1. Open **https://playtomic.com** in Chrome or Firefox and log in.
+2. Start a court booking: choose your club, date, time, and go to the step where you see payment / “Book” / “Reserve”.
+3. Open **Developer Tools**: press **F12** (or right‑click → Inspect).
+4. Go to the **Network** tab.
+5. Filter by **Fetch/XHR** (or type `payment`, `intent`, `cart`, `reservation` in the filter).
+6. Click the button that **creates the reservation** (e.g. “Book”, “Pay”, “Confirm”, “Continue”).
+7. In the Network list, find the **first new request** that looks like creating a booking (often **POST**, name like `payment_intents`, `cart`, `reservation`, `checkout`).
+8. Click that request and copy:
+   - **Request URL** (e.g. `https://playtomic.com/api/...`)
+   - **Request Method** (e.g. POST)
+   - **Request Payload**: in the “Payload” or “Request” tab, copy the JSON body (or a screenshot).
+
+Send that **URL**, **Method**, and **Payload** (or screenshot) so the bot can be updated to use the same endpoint. More detail: **[PAYMENT_API_TROUBLESHOOTING.md](PAYMENT_API_TROUBLESHOOTING.md)** in this folder.
 
 ## Terms and reliability
 
