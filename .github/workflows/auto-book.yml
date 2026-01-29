@@ -1,0 +1,32 @@
+# Run Playtomic auto-booking at a scheduled time (e.g. when slots open).
+# Set PLAYTOMIC_EMAIL, PLAYTOMIC_PASSWORD (and optionally TELEGRAM_*) as repo secrets.
+name: Playtomic auto-book
+
+on:
+  schedule:
+    # Run at 07:55 UTC daily (adjust to your slot release time; e.g. 08:00 local = set cron accordingly)
+    - cron: "55 7 * * 1-5"
+  workflow_dispatch:
+    # Allow manual run from Actions tab
+
+jobs:
+  book:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run booking
+        env:
+          PLAYTOMIC_EMAIL: ${{ secrets.PLAYTOMIC_EMAIL }}
+          PLAYTOMIC_PASSWORD: ${{ secrets.PLAYTOMIC_PASSWORD }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m src.scheduler

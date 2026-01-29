@@ -1,0 +1,16 @@
+# Playtomic API & HTTP
+requests>=2.32,<3
+pytz>=2024.1
+tzlocal>=5.2
+
+# Configuration & validation
+pydantic>=2,<3
+pydantic-settings>=2,<3
+python-dotenv>=1.0,<2
+PyYAML>=6.0
+
+# Scheduling
+schedule>=1.2,<2
+
+# Notifications (optional)
+# telegram-send or requests for webhooks

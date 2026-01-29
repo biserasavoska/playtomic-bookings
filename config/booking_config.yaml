@@ -1,0 +1,31 @@
+# Playtomic auto-booking config
+# Copy to your repo and fill in your venue (tenant) ID from Playtomic.
+
+# Preferred start times (weekdays 18:00–21:30)
+target_hours:
+  - "18:00"
+  - "18:30"
+  - "19:00"
+  - "19:30"
+  - "20:00"
+  - "20:30"
+  - "21:00"
+  - "21:30"
+
+# Weekdays only (0=Monday .. 6=Sunday)
+weekdays_only: true
+target_weekdays: [0, 1, 2, 3, 4]  # Mon–Fri
+
+# Slot duration in hours (1, 1.5, or 2)
+duration_hours: 1.5
+
+# Max reservations per week per venue
+reservations_per_week: 1
+
+# Venues to try (get tenant ID from Playtomic app/URL when viewing the club)
+tenants:
+  - id: "YOUR_TENANT_ID"   # Replace with your club's Playtomic venue ID
+    name: "My Padel Club"
+
+# Optional: when slots open (for cron); e.g. "08:00" if they open at 8am
+# booking_release_time: "08:00"

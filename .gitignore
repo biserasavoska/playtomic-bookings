@@ -1,0 +1,27 @@
+# Environment and secrets
+.env
+*.env
+!\.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Config with secrets (keep example only)
+config/config.local.yaml
+
+# Logs
+*.log
+logs/
